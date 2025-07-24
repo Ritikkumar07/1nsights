@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Insights - Unlocking the Potential of AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .nav-link.active {
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        /* Hero section specific styles for 3D background */
+        .hero-section {
+            position: relative;
+            background-color: #020617; /* slate-900 */
+            overflow: hidden;
+        }
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2 nav-link" data-target="home">
+                <svg class="h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25H8.25A2.25 2.25 0 006 8.25v10.5A2.25 2.25 0 008.25 21z" />
+                </svg>
+                <span class="text-2xl font-bold text-slate-800">AI Insights</span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#" class="nav-link text-slate-600 hover:text-blue-600 transition-colors" data-target="home">Home</a>
+                <a href="#" class="nav-link text-slate-600 hover:text-blue-600 transition-colors" data-target="about">About AI</a>
+                <a href="#" class="nav-link text-slate-600 hover:text-blue-600 transition-colors" data-target="applications">Applications</a>
+                <a href="#" class="nav-link text-slate-600 hover:text-blue-600 transition-colors" data-target="ethics">Ethics</a>
+            </nav>
+            <a href="#" class="nav-link hidden md:inline-block bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors" data-target="contact">Contact</a>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2">
+            <a href="#" class="nav-link block text-slate-600 hover:text-blue-600 transition-colors" data-target="home">Home</a>
+            <a href="#" class="nav-link block text-slate-600 hover:text-blue-600 transition-colors" data-target="about">About AI</a>
+            <a href="#" class="nav-link block text-slate-600 hover:text-blue-600 transition-colors" data-target="applications">Applications</a>
+            <a href="#" class="nav-link block text-slate-600 hover:text-blue-600 transition-colors" data-target="ethics">Ethics</a>
+            <a href="#" class="nav-link block bg-blue-600 text-white text-center mt-2 px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors" data-target="contact">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Home Page -->
+        <div id="home-page" class="page">
+            <!-- Hero Section -->
+            <section class="hero-section text-white">
+                <canvas id="hero-canvas"></canvas>
+                <div class="hero-content container mx-auto px-6 py-32 text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">Unlocking the Potential of Artificial Intelligence</h1>
+                    <p class="text-lg md:text-xl text-slate-200 max-w-3xl mx-auto mb-8">Explore the transformative power of AI and its impact on various industries. Discover how AI is shaping the future and revolutionizing the way we live and work.</p>
+                    <a href="#" class="nav-link bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-transform hover:scale-105 inline-block" data-target="about">Explore AI</a>
+                </div>
+            </section>
+
+            <!-- Core Concepts Section -->
+            <section class="py-20 bg-white">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-12">
+                        <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Key Aspects of AI</h2>
+                        <p class="mt-2 text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">Explore the Core Concepts</p>
+                        <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500">Dive into the fundamental building blocks of AI and understand how they work together to create intelligent systems.</p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="app-card bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-lg transition-shadow flex flex-col cursor-pointer" data-title="Machine Learning" data-img-src="https://tse2.mm.bing.net/th/id/OIP.EZeP9vSGOADD1MSdiDctcgHaE7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" data-details="Machine Learning (ML) is a fundamental concept of AI that focuses on building systems that can learn from and make decisions based on data. Instead of being explicitly programmed with rules, an ML model is trained on a large dataset. During training, it learns to identify patterns, correlations, and features within the data. The three main types are: Supervised Learning (learning from labeled data), Unsupervised Learning (finding patterns in unlabeled data), and Reinforcement Learning (learning through trial and error with rewards and penalties)." >
+                            <img src="https://www.newstrail.com/wp-content/uploads/2023/08/AI-Becomes-a-Mainstream-Investment-in-2023-as-Giants-Actively-Engage-in-the-ChatGPT-Race.png" alt="Machine Learning" class="rounded-lg mb-4 w-full h-40 object-cover pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">Machine Learning</h3>
+                                <p class="text-slate-600">A core area of AI where algorithms enable computers to learn from data without explicit programming.</p>
+                            </div>
+                        </div>
+                        <div class="app-card bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-lg transition-shadow flex flex-col cursor-pointer" data-title="Neural Networks" data-img-src="https://img.freepik.com/premium-photo/closeup-network_81048-38651.jpg" data-details="Inspired by the human brain, Neural Networks are a set of algorithms that are designed to recognize patterns. They interpret sensory data through a kind of machine perception, labeling or clustering raw input. The patterns they recognize are numerical, contained in vectors, into which all real-world data, be it images, sound, text or time series, must be translated. Deep learning is a type of neural network with many layers (deep), which allows for learning highly complex patterns in large datasets.">
+                            <img src="https://bernardmarr.com/img/What%20is%20an%20Artificial%20Neural%20Networks.jpg" alt="Neural Networks" class="rounded-lg mb-4 w-full h-40 object-cover pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">Neural Networks</h3>
+                                <p class="text-slate-600">A computing architecture inspired by the human brain that powers many AI applications.</p>
+                            </div>
+                        </div>
+                        <div class="app-card bg-slate-50 rounded-xl p-8 shadow-sm hover:shadow-lg transition-shadow flex flex-col cursor-pointer" data-title="Natural Language Processing" data-img-src="https://www.lohmancompany.com/wp-content/uploads/2023/03/AdobeStock_476628356-600x300.jpeg" data-details="Natural Language Processing (NLP) is a field of AI that gives computers the ability to understand, interpret, and generate human language. NLP is the driving force behind virtual assistants like Siri and Alexa, language translation services like Google Translate, and sentiment analysis tools that gauge public opinion on social media. It combines computational linguistics—rule-based modeling of human language—with statistical, machine learning, and deep learning models.">
+                            <img src="https://wallpaperaccess.com/full/12044974.png" alt="Natural Language Processing" class="rounded-lg mb-4 w-full h-40 object-cover pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">Natural Language Processing</h3>
+                                <p class="text-slate-600">Enables machines to read and understand human language, enabling communication.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI in Action Section -->
+            <section class="py-20">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl lg:text-4xl font-bold tracking-tight text-slate-900">AI in Action</h2>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="app-card bg-white rounded-xl p-6 shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Healthcare" data-img-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhSJ_mpMpMTN1MBDAPGAAaML9rLG21B4J_lfG69jUS-s5VETa_-7tWE50USllfGdMxE6QnRtM2AK3ZNio8VDrsY7XDDnDyZBpITfzXfadV93rDiCiAIpXuSVkMosgJR1M7ZCIFv0QM3SYCgu1neroxm7jkoRk-Ra23rVpIkaeSVBiCHBO0HNGNj31uaSl8/s1920/fcdfcd.jpg" data-details="In healthcare, AI algorithms, particularly deep learning models like Convolutional Neural Networks (CNNs), are trained on vast datasets of medical images (X-rays, MRIs, CT scans) to identify patterns indicative of diseases such as cancer or diabetic retinopathy, often with accuracy comparable to or exceeding human radiologists. Natural Language Processing (NLP) models process clinical notes and research papers to accelerate drug discovery and extract valuable patient information. This leads to faster diagnoses, more effective treatments, and the development of personalized medicine tailored to individual patient profiles.">
+                            <img src="https://www.techspian.com/wp-content/uploads/2023/02/MicrosoftTeams-image-1.jpg" alt="AI in Healthcare" class="w-full h-48 object-cover rounded-lg mb-4 pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">AI in Healthcare</h3>
+                                <p class="text-slate-600">AI is revolutionizing healthcare with applications in diagnosis, drug discovery, and personalized medicine.</p>
+                            </div>
+                        </div>
+                        <div class="app-card bg-white rounded-xl p-6 shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Finance" data-img-src="https://rickorford.com/wp-content/uploads/2024/02/AI-in-Finance-Management.jpg" data-details="Financial institutions use AI to analyze millions of transactions in real-time to detect fraudulent patterns and prevent unauthorized activity. In trading, high-frequency trading (HFT) algorithms execute trades in microseconds based on market data analysis. AI-powered robo-advisors create and manage investment portfolios based on an individual's financial goals and risk tolerance, making wealth management more accessible. AI also plays a crucial role in credit scoring, providing more accurate risk assessments by analyzing a wider range of data points.">
+                            <img src="https://www.pacificdataintegrators.com/hubfs/create-an-image-of-a-professional-businessperson-w-lpdiAVNORQG3yIbavBn2ig-pbQQz7RDQua63WPfmjBWQA.jpeg" alt="AI in Finance" class="w-full h-48 object-cover rounded-lg mb-4 pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">AI in Finance</h3>
+                                <p class="text-slate-600">AI is transforming the financial industry with algorithmic trading, risk management, and fraud detection.</p>
+                            </div>
+                        </div>
+                        <div class="app-card bg-white rounded-xl p-6 shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Transportation" data-img-src="https://www.cogitotech.com/wp-content/uploads/2022/12/ai-for-autonomous-vehicles-1.webp" data-details="Autonomous vehicles use a combination of sensors (like LiDAR and radar), cameras, and sophisticated AI models to perceive their environment, predict the behavior of other vehicles and pedestrians, and navigate safely. In logistics, AI analyzes historical data, weather patterns, and traffic conditions to predict delivery times, optimize routes, and manage fleet operations, reducing fuel consumption and costs. Smart traffic management systems use AI to analyze traffic flow and adjust signals in real-time to reduce congestion.">
+                            <img src="https://www.datasciencecentral.com/wp-content/uploads/2023/01/AdobeStock_555644660-scaled.jpeg" alt="AI in Transportation" class="w-full h-48 object-cover rounded-lg mb-4 pointer-events-none">
+                            <div class="flex flex-col flex-grow pointer-events-none">
+                                <h3 class="text-xl font-bold mb-2">AI in Transportation</h3>
+                                <p class="text-slate-600">AI is driving innovation in transportation with autonomous vehicles, smart traffic management, and logistics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- About Page -->
+        <div id="about-page" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <h1 class="text-4xl font-bold text-center mb-4">About Artificial Intelligence</h1>
+                <p class="text-xl text-slate-600 text-center max-w-3xl mx-auto mb-16">Artificial intelligence (AI) is revolutionizing how we interact with technology and the world around us. At its core, AI involves creating systems capable of performing tasks that typically require human intelligence, such as learning, problem-solving, and decision-making.</p>
+
+                <!-- History Section -->
+                <section class="mb-16">
+                    <h2 class="text-3xl font-bold mb-8">History of AI</h2>
+                    <div class="relative border-l-2 border-blue-500 pl-8 space-y-12">
+                        <div class="history-item relative">
+                            <div class="absolute -left-10 top-1.5 h-4 w-4 rounded-full bg-blue-500"></div>
+                            <p class="font-bold text-blue-600">1950s: The Birth of AI</p>
+                            <p class="text-slate-600">Alan Turing proposes the 'Turing Test', a test of a machine's ability to exhibit intelligent behavior.</p>
+                        </div>
+                        <div class="history-item relative">
+                            <div class="absolute -left-10 top-1.5 h-4 w-4 rounded-full bg-blue-500"></div>
+                            <p class="font-bold text-blue-600">1980s: Expert Systems</p>
+                            <p class="text-slate-600">Rule-based systems gain popularity, capturing human expertise in specific domains.</p>
+                        </div>
+                        <div class="history-item relative">
+                            <div class="absolute -left-10 top-1.5 h-4 w-4 rounded-full bg-blue-500"></div>
+                            <p class="font-bold text-blue-600">2000s: Machine Learning</p>
+                            <p class="text-slate-600">Algorithms learn from data, leading to breakthroughs in various fields.</p>
+                        </div>
+                        <div class="history-item relative">
+                            <div class="absolute -left-10 top-1.5 h-4 w-4 rounded-full bg-blue-500"></div>
+                            <p class="font-bold text-blue-600">2010s: Deep Learning</p>
+                            <p class="text-slate-600">Neural networks achieve breakthroughs, powering modern AI applications.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Types of AI Section -->
+                <section>
+                    <h2 class="text-3xl font-bold mb-8">Types of AI</h2>
+                    <div class="space-y-4 accordion-container">
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Narrow or Weak AI
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>Narrow AI, also known as weak AI, is designed to perform a specific task. Examples include virtual assistants, recommendation systems, and image recognition software. These systems excel within their defined scope but lack broader cognitive abilities.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                General or Strong AI
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>General AI, or strong AI, refers to AI systems with human-level intelligence. These systems would possess the ability to understand, learn, and apply knowledge across a wide range of tasks, similar to human cognitive capabilities. Currently, general AI remains a theoretical concept.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Super AI
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>Super AI represents a hypothetical level of intelligence surpassing human capabilities in all aspects, including creativity, problem-solving, and general wisdom. This type of AI is purely speculative and raises significant ethical and philosophical questions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Applications Page -->
+        <div id="applications-page" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <h1 class="text-4xl font-bold text-center mb-4">AI Applications</h1>
+                <p class="text-xl text-slate-600 text-center max-w-3xl mx-auto mb-12">Explore the diverse applications of AI across various industries, transforming how we work and live.</p>
+
+                <div class="mb-12 max-w-2xl mx-auto">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="w-5 h-5 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        </span>
+                        <input id="app-search-input" type="search" placeholder="Search applications (e.g., Finance)" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div id="app-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Healthcare" data-img-src="https://aitnews.com/wp-content/uploads/2023/10/img-1-13.jpg" data-details="In healthcare, AI algorithms, particularly deep learning models like Convolutional Neural Networks (CNNs), are trained on vast datasets of medical images (X-rays, MRIs, CT scans) to identify patterns indicative of diseases such as cancer or diabetic retinopathy, often with accuracy comparable to or exceeding human radiologists. Natural Language Processing (NLP) models process clinical notes and research papers to accelerate drug discovery and extract valuable patient information. This leads to faster diagnoses, more effective treatments, and the development of personalized medicine tailored to individual patient profiles.">
+                        <img src="https://online.stanford.edu/sites/default/files/styles/figure_default/public/2020-08/artificial-intelligence-in-healthcare-MAIN.jpg?itok=CFkrao5e" alt="Healthcare" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Healthcare</h3>
+                            <p class="text-slate-600 flex-grow">Analyzes medical images to detect diseases earlier, discovers new drugs by analyzing biological data, and personalizes treatment plans.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Finance" data-img-src="https://smartclick.ai/wp-content/uploads/2020/06/MicrosoftTeams-image-4.jpg" data-details="Financial institutions use AI to analyze millions of transactions in real-time to detect fraudulent patterns and prevent unauthorized activity. In trading, high-frequency trading (HFT) algorithms execute trades in microseconds based on market data analysis. AI-powered robo-advisors create and manage investment portfolios based on an individual's financial goals and risk tolerance, making wealth management more accessible. AI also plays a crucial role in credit scoring, providing more accurate risk assessments by analyzing a wider range of data points.">
+                        <img src="https://www.shutterstock.com/shutterstock/photos/2336326591/display_1500/stock-vector-ai-robot-doing-digital-online-work-artificial-intelligence-character-working-and-doing-tasks-2336326591.jpg" alt="Finance" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Finance</h3>
+                            <p class="text-slate-600 flex-grow">Powers real-time fraud detection, performs algorithmic trading, assesses credit risk, and provides personalized financial advice through robo-advisors.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Education" data-img-src="https://leoscale.co/wp-content/uploads/2023/12/image-12-1024x538.png" data-details="AI-driven educational platforms can track a student's progress and identify areas where they are struggling. Based on this data, the system provides customized learning materials, exercises, and feedback, creating an adaptive learning path. Intelligent tutoring systems act as 24/7 virtual tutors, answering student questions and guiding them through complex topics. Furthermore, AI can automate administrative tasks like grading, freeing up teachers to focus more on instruction and student interaction.">
+                        <img src="https://pixelplex.io/wp-content/uploads/2021/01/top-use-cases-of-ai-in-education-main-1600.jpg" alt="Education" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Education</h3>
+                            <p class="text-slate-600 flex-grow">Creates adaptive learning paths for students, automates grading to save teacher time, and provides support through intelligent tutoring systems.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Transportation" data-img-src="https://tse2.mm.bing.net/th/id/OIP.mMkctcp5AY8gQa9DoL6MgQHaFj?r=0&w=1600&h=1200&rs=1&pid=ImgDetMain&o=7&rm=3" data-details="Autonomous vehicles use a combination of sensors (like LiDAR and radar), cameras, and sophisticated AI models to perceive their environment, predict the behavior of other vehicles and pedestrians, and navigate safely. In logistics, AI analyzes historical data, weather patterns, and traffic conditions to predict delivery times, optimize routes, and manage fleet operations, reducing fuel consumption and costs. Smart traffic management systems use AI to analyze traffic flow and adjust signals in real-time to reduce congestion.">
+                        <img src="https://www.researchgate.net/publication/358820733/figure/fig1/AS:1127007614177345@1645710962801/An-example-of-smart-mobility-2.jpg" alt="Transportation" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Transportation</h3>
+                            <p class="text-slate-600 flex-grow">Core technology for self-driving cars, optimizes traffic flow in smart cities, and streamlines logistics by predicting demand and optimizing routes.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Entertainment" data-img-src="https://img.freepik.com/premium-photo/virtual-reality-interface-conceptual-wallpaper_1142544-196.jpg?w=2000" data-details="Streaming services like Netflix and Spotify use collaborative filtering and content-based filtering algorithms to analyze your viewing/listening history and suggest new content you might enjoy. In gaming, AI controls non-player characters (NPCs), making them behave realistically and adapt to the player's actions, creating more immersive and challenging gameplay. AI is also used in film production for tasks like CGI and special effects generation.">
+                        <img src="https://daily.slickdeals.net/wp-content/uploads/2022/02/Hero_VR_headset.jpg" alt="Entertainment" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Entertainment</h3>
+                            <p class="text-slate-600 flex-grow">Recommends movies and music on streaming services and creates realistic characters and worlds in video games for interactive experiences.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Manufacturing" data-img-src="https://assets.new.siemens.com/siemens/assets/api/uuid:cfa16190-9fdc-487a-a94f-d37aacdcd367/width:2000/quality:high/simatic-rtls-robotics-1-926846266.jpg" data-details="In smart factories, AI-powered robots perform repetitive or dangerous tasks with high precision. Predictive maintenance uses sensors and AI to monitor equipment health, predicting when a part is likely to fail so it can be replaced proactively, minimizing downtime. Computer vision systems inspect products on the assembly line, identifying defects far more quickly and accurately than the human eye, ensuring higher quality control.">
+                        <img src="https://www.vlcsolutions.com/blog/wp-content/uploads/2021/08/Artificial-Intelligence-AI-in-Manufacturing-Blog-1024x517.png" alt="Manufacturing" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Manufacturing</h3>
+                            <p class="text-slate-600 flex-grow">Uses robots for complex assembly, predicts machinery failures to prevent downtime, and uses computer vision to inspect products for defects.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Retail" data-img-src="https://www.amasf.org/wp-content/uploads/2022/08/Blog_Marketing_in_the_Metaverse_Blog_Facebook_LinkedIn_1024x512-1000x513.png" data-details="E-commerce websites use AI to provide personalized product recommendations based on your browsing history and past purchases. In physical stores, AI can be used for inventory management, tracking stock levels and automatically reordering products. AI-powered chatbots handle customer service inquiries, answering common questions and resolving issues 24/7. Dynamic pricing algorithms can also adjust prices in real-time based on demand and competitor pricing.">
+                        <img src="https://www.damcogroup.com/wp-content/uploads/2024/03/generative-ai-in-retail.jpg" alt="Retail" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Retail</h3>
+                            <p class="text-slate-600 flex-grow">Provides personalized product recommendations, optimizes inventory by forecasting demand, and enhances customer service with chatbots.</p>
+                        </div>
+                    </div>
+                    <div class="app-card bg-white rounded-lg shadow-md overflow-hidden group flex flex-col cursor-pointer" data-title="Energy" data-img-src="https://dv-group.com/app/uploads/2023/09/management-energie-scaled.jpg" data-details="AI helps manage the electricity grid by forecasting energy demand and production from renewable sources like solar and wind. This allows for better balancing of the grid and prevents outages. AI algorithms can also optimize the operation of wind turbines and solar panels to maximize their energy output. In the oil and gas sector, AI is used to analyze seismic data to find new reserves and optimize drilling operations.">
+                        <img src="https://trendsresearch.org/wp-content/uploads/2024/12/AI-in-Energy-Transformation-V2-copy.jpg" alt="Energy" class="w-full h-40 object-cover group-hover:scale-105 transition-transform pointer-events-none">
+                        <div class="p-6 flex flex-col flex-grow pointer-events-none">
+                            <h3 class="app-title text-xl font-bold mb-2">Energy</h3>
+                            <p class="text-slate-600 flex-grow">Creates smart grids by balancing energy supply and demand, optimizes renewable energy sources, and identifies efficiency improvements.</p>
+                        </div>
+                    </div>
+                </div>
+                 <p id="no-results-message" class="text-center text-slate-500 mt-8 hidden">No applications found matching your search.</p>
+            </div>
+        </div>
+        
+        <!-- Application Detail Page -->
+        <div id="application-detail-page" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <button id="back-button" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-800 mb-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                      <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" />
+                    </svg>
+                    Back
+                </button>
+                <h1 id="detail-title" class="text-4xl font-bold mb-4"></h1>
+                <img id="detail-image" src="" alt="" class="w-full h-96 object-cover rounded-lg mb-8 shadow-lg">
+                <p id="detail-text" class="text-lg text-slate-700 leading-relaxed max-w-4xl mx-auto"></p>
+            </div>
+        </div>
+
+
+        <!-- Ethics Page -->
+        <div id="ethics-page" class="page">
+            <div class="container mx-auto px-6 py-16">
+                <h1 class="text-4xl font-bold text-center mb-4">Ethics in Artificial Intelligence</h1>
+                <p class="text-xl text-slate-600 text-center max-w-3xl mx-auto mb-16">An overview of the principles and guidelines that govern the responsible development and deployment of AI.</p>
+                
+                <div class="max-w-4xl mx-auto accordion-container">
+                    <h2 class="text-2xl font-bold mb-4">Key Ethical Challenges</h2>
+                    <div class="space-y-4 mb-12">
+                         <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Bias and Fairness
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>AI systems can perpetuate and even amplify existing biases present in data, leading to unfair outcomes for certain groups. Ensuring fairness requires careful data selection, algorithmic design, and continuous monitoring.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Privacy and Data Governance
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>AI often requires large amounts of data, raising concerns about privacy. Robust data governance frameworks are needed to protect personal information and ensure data is used responsibly.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Accountability and Transparency
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>When an AI system makes a mistake, who is responsible? Establishing clear lines of accountability is crucial. Transparency, or the ability to explain how an AI model makes decisions (explainability), is key to building trust.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mb-4">FAQ</h2>
+                     <div class="space-y-4">
+                         <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                What is AI ethics?
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>AI ethics is a branch of ethics that studies the moral implications of creating and using artificial intelligence. It aims to guide the design and use of AI to be beneficial for humanity.</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item bg-white border border-slate-200 rounded-lg">
+                            <button class="accordion-header w-full text-left p-5 font-semibold flex justify-between items-center">
+                                Why is AI bias a problem?
+                                <svg class="w-5 h-5 transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div class="accordion-content px-5 pb-5 text-slate-600">
+                                <p>AI bias can lead to discriminatory outcomes in critical areas like hiring, loan applications, and criminal justice, reinforcing societal inequalities.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact-page" class="page">
+            <div class="bg-white py-16">
+                <div class="container mx-auto px-6">
+                    <div class="max-w-2xl mx-auto text-center">
+                        <h1 class="text-4xl font-bold mb-4">Contact Us</h1>
+                        <p class="text-xl text-slate-600 mb-8">We're here to help! Reach out to us with any questions or feedback.</p>
+                        <p class="text-lg text-slate-600 mb-12">
+                            Join <span id="user-count" class="font-bold text-blue-600 text-xl">0</span> others who have reached out!
+                        </p>
+                    </div>
+                    <div class="max-w-2xl mx-auto bg-slate-50 p-8 rounded-lg shadow-sm">
+                        <form id="contact-form">
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-slate-700">Your Name</label>
+                                    <input type="text" id="name" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-slate-700">Your Email</label>
+                                    <input type="email" id="email" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="subject" class="block text-sm font-medium text-slate-700">Subject</label>
+                                    <input type="text" id="subject" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="message" class="block text-sm font-medium text-slate-700">Message</label>
+                                    <textarea id="message" rows="4" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                </div>
+                                <div>
+                                    <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                         <div id="form-success-message" class="hidden mt-4 text-center p-4 bg-green-100 text-green-800 rounded-lg">
+                            Thank you for your message! We'll get back to you soon.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">AI Insights</h3>
+                    <p class="text-slate-400">Exploring the future of intelligence.</p>
+                </div>
+                <div class="md:text-center">
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="nav-link text-slate-400 hover:text-white" data-target="about">About</a></li>
+                        <li><a href="#" class="nav-link text-slate-400 hover:text-white" data-target="applications">Applications</a></li>
+                        <li><a href="#" class="nav-link text-slate-400 hover:text-white" data-target="contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="md:text-right">
+                    <h3 class="text-lg font-semibold mb-4">Connect</h3>
+                    <div class="flex md:justify-end space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white" aria-label="Twitter">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.71v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+                        </a>
+                         <a href="#" class="text-slate-400 hover:text-white" aria-label="LinkedIn">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-slate-700 pt-8 flex flex-col sm:flex-row justify-between items-center text-sm">
+                <p class="text-slate-400 mb-4 sm:mb-0">&copy; 2025 AI Insights. All rights reserved.</p>
+                <div class="flex items-center space-x-4 text-slate-400">
+                    <span>Created by Ritik Kumar</span>
+                    <a href="#" class="hover:text-white" aria-label="Portfolio">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                          <path d="M12.232 4.232a2.5 2.5 0 013.536 3.536l-1.225 1.224a.75.75 0 001.061 1.06l1.224-1.224a4 4 0 00-5.656-5.656l-3 3a4 4 0 00.225 5.865.75.75 0 00.977-1.138 2.5 2.5 0 01-.142-3.665l3-3z" />
+                          <path d="M8.603 16.117a2.5 2.5 0 01-3.536-3.536l1.225-1.224a.75.75 0 00-1.061-1.06l-1.224 1.224a4 4 0 005.656 5.656l3-3a4 4 0 00-.225-5.865.75.75 0 00-.977 1.138 2.5 2.5 0 01.142 3.665l-3 3z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="hover:text-white" aria-label="GitHub">
+                        <svg fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            const mainPages = document.querySelectorAll('#home-page, #about-page, #applications-page, #ethics-page, #contact-page');
+            const mainElement = document.querySelector('main');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            const appDetailPage = document.getElementById('application-detail-page');
+            const backButton = document.getElementById('back-button');
+            let originPage = 'home'; // To store where the user came from
+
+            // --- Page Navigation ---
+            function showPage(targetId) {
+                pages.forEach(page => page.classList.remove('active'));
+                const targetPage = document.getElementById(targetId + '-page');
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.target === targetId) {
+                        link.classList.add('active');
+                    }
+                });
+                mobileMenu.classList.add('hidden');
+                window.scrollTo(0, 0);
+            }
+
+            showPage('home');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.dataset.target;
+                    showPage(targetId);
+                });
+            });
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- Accordion Functionality ---
+            const accordionContainers = document.querySelectorAll('.accordion-container');
+            accordionContainers.forEach(container => {
+                container.addEventListener('click', (e) => {
+                    const header = e.target.closest('.accordion-header');
+                    if (!header) return;
+                    const item = header.parentElement;
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('svg');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.classList.remove('rotate-180');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+
+            // --- Application Search Functionality ---
+            const searchInput = document.getElementById('app-search-input');
+            const appGrid = document.getElementById('app-grid');
+            const noResultsMessage = document.getElementById('no-results-message');
+
+            if(searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    let visibleCount = 0;
+                    const appCards = appGrid.querySelectorAll('.app-card');
+                    appCards.forEach(card => {
+                        const title = card.dataset.title.toLowerCase();
+                        const description = card.querySelector('p').textContent.toLowerCase();
+                        const isVisible = title.includes(searchTerm) || description.includes(searchTerm);
+                        card.style.display = isVisible ? 'flex' : 'none';
+                        if (isVisible) visibleCount++;
+                    });
+                    noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+                });
+            }
+            
+            // --- Application Detail Page ---
+            const detailTitle = document.getElementById('detail-title');
+            const detailImage = document.getElementById('detail-image');
+            const detailText = document.getElementById('detail-text');
+
+            if (mainElement) {
+                mainElement.addEventListener('click', (e) => {
+                    const card = e.target.closest('.app-card');
+                    if (!card) return;
+
+                    const activePage = document.querySelector('.page.active');
+                    if(activePage) {
+                        originPage = activePage.id.replace('-page', '');
+                    }
+
+                    // Hide all main pages
+                    mainPages.forEach(p => p.classList.remove('active'));
+
+                    // Get data from the card
+                    const title = card.dataset.title;
+                    const imgSrc = card.dataset.imgSrc;
+                    const details = card.dataset.details;
+                    
+                    // Populate and show the detail page
+                    detailTitle.textContent = title;
+                    detailImage.src = imgSrc;
+                    detailImage.alt = title;
+                    detailText.textContent = details;
+                    
+                    // Update back button text
+                    if (originPage === 'home') {
+                        backButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" /></svg> <span>Back to Home</span>`;
+                    } else {
+                        backButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" /></svg> <span>Back to Applications</span>`;
+                    }
+
+                    appDetailPage.classList.add('active');
+                    window.scrollTo(0, 0);
+                });
+            }
+
+            if (backButton) {
+                backButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    appDetailPage.classList.remove('active');
+                    showPage(originPage);
+                });
+            }
+
+
+            // --- Contact Form ---
+            const contactForm = document.getElementById('contact-form');
+            const successMessage = document.getElementById('form-success-message');
+            const userCountSpan = document.getElementById('user-count');
+            let userCount = 0;
+
+            if(contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Basic validation
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const message = document.getElementById('message').value;
+
+                    if(name.trim() === '' || email.trim() === '' || message.trim() === '') {
+                        // In a real app, show an error message. Here, we'll just prevent submission.
+                        return;
+                    }
+                    
+                    // Increment user count
+                    userCount++;
+                    userCountSpan.textContent = userCount;
+
+                    // Show success message
+                    contactForm.reset();
+                    successMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        successMessage.classList.add('hidden');
+                    }, 4000);
+                });
+            }
+
+            // --- Hero 3D Animation ---
+            let scene, camera, renderer, nodes, lines, signals;
+            const heroSection = document.querySelector('.hero-section');
+            const canvas = document.getElementById('hero-canvas');
+
+            function initHeroAnimation() {
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(75, heroSection.offsetWidth / heroSection.offsetHeight, 0.1, 1000);
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+                renderer.setSize(heroSection.offsetWidth, heroSection.offsetHeight);
+
+                const nodeCount = 200;
+                const nodePositions = new Float32Array(nodeCount * 3);
+                const nodeGeometry = new THREE.BufferGeometry();
+                
+                for (let i = 0; i < nodeCount; i++) {
+                    const i3 = i * 3;
+                    nodePositions[i3] = (Math.random() - 0.5) * 10;
+                    nodePositions[i3 + 1] = (Math.random() - 0.5) * 10;
+                    nodePositions[i3 + 2] = (Math.random() - 0.5) * 10;
+                }
+                nodeGeometry.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3));
+                const nodeMaterial = new THREE.PointsMaterial({ color: 0x00aaff, size: 0.05 });
+                nodes = new THREE.Points(nodeGeometry, nodeMaterial);
+                scene.add(nodes);
+
+                const linePositions = [];
+                const connectionDistance = 1.5;
+                for (let i = 0; i < nodeCount; i++) {
+                    for (let j = i + 1; j < nodeCount; j++) {
+                        const dx = nodePositions[i * 3] - nodePositions[j * 3];
+                        const dy = nodePositions[i * 3 + 1] - nodePositions[j * 3 + 1];
+                        const dz = nodePositions[i * 3 + 2] - nodePositions[j * 3 + 2];
+                        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (distance < connectionDistance) {
+                            linePositions.push(nodePositions[i * 3], nodePositions[i * 3 + 1], nodePositions[i * 3 + 2]);
+                            linePositions.push(nodePositions[j * 3], nodePositions[j * 3 + 1], nodePositions[j * 3 + 2]);
+                        }
+                    }
+                }
+                const lineGeometry = new THREE.BufferGeometry();
+                lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.1 });
+                lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+                scene.add(lines);
+
+                // Signals
+                const signalGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+                const signalMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                signals = [];
+                for(let i = 0; i < 10; i++) {
+                    const signal = new THREE.Mesh(signalGeometry, signalMaterial);
+                    signal.visible = false;
+                    scene.add(signal);
+                    signals.push({
+                        mesh: signal,
+                        active: false,
+                        progress: 0,
+                        speed: Math.random() * 0.01 + 0.005,
+                        start: new THREE.Vector3(),
+                        end: new THREE.Vector3()
+                    });
+                }
+                
+                camera.position.z = 6;
+                animate();
+            }
+
+            let mouseX = 0;
+            let mouseY = 0;
+
+            function onMouseMove(event) {
+                mouseX = (event.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+                mouseY = (event.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+            }
+            
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const time = Date.now() * 0.0001;
+                nodes.rotation.y = time;
+                lines.rotation.y = time;
+
+                // Animate signals
+                signals.forEach(s => {
+                    if (s.active) {
+                        s.progress += s.speed;
+                        s.mesh.position.lerpVectors(s.start, s.end, s.progress);
+                        if (s.progress >= 1) {
+                            s.active = false;
+                            s.mesh.visible = false;
+                        }
+                    }
+                });
+
+                // Start new signals
+                if (Math.random() > 0.95) {
+                    const inactiveSignal = signals.find(s => !s.active);
+                    if (inactiveSignal) {
+                        const linePositions = lines.geometry.attributes.position.array;
+                        const lineIndex = Math.floor(Math.random() * (linePositions.length / 6)) * 6;
+                        
+                        inactiveSignal.start.set(linePositions[lineIndex], linePositions[lineIndex + 1], linePositions[lineIndex + 2]);
+                        inactiveSignal.end.set(linePositions[lineIndex + 3], linePositions[lineIndex + 4], linePositions[lineIndex + 5]);
+                        inactiveSignal.progress = 0;
+                        inactiveSignal.active = true;
+                        inactiveSignal.mesh.visible = true;
+                        inactiveSignal.mesh.position.copy(inactiveSignal.start);
+                    }
+                }
+
+                camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+
+            function onWindowResize() {
+                camera.aspect = heroSection.offsetWidth / heroSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(heroSection.offsetWidth, heroSection.offsetHeight);
+            }
+
+            if(canvas) {
+                initHeroAnimation();
+                window.addEventListener('resize', onWindowResize);
+                document.addEventListener('mousemove', onMouseMove);
+            }
+        });
+    </script>
+</body>
+</html>
