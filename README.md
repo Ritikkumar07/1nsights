@@ -1,0 +1,2 @@
+# 1nsights
+about AI
